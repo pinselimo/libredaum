@@ -1,12 +1,9 @@
 package space.behaviour.libredaum;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import sun.nio.cs.US_ASCII;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 public class Command {
