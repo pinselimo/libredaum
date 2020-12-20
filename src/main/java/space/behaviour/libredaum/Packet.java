@@ -22,6 +22,7 @@ public class Packet {
         System.arraycopy(data, 0, packet, 4, data.length);
         byte[] cs = checksum(data);
         System.arraycopy(cs, 0, packet, 4+data.length, cs.length);
+        packet[packet_len-1] = ETB;
     }
 
     private static byte[] checksum(byte[] data) {
