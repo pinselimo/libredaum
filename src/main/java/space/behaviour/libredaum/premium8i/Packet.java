@@ -4,7 +4,8 @@ import java.nio.ByteBuffer;
 
 public class Packet {
 
-    private final static byte SOH = 0x01b;
+    private final static byte SOH = 0x01;
+    private final static byte ETB = 0x17;
 
     public Packet() {
 
