@@ -7,6 +7,9 @@ public class Packet {
     private final static byte SOH = 0x01;
     private final static byte ETB = 0x17;
 
+    public final static byte ACK = 0x06;
+    public final static byte NAK = 0x15;
+
     public Packet() {
 
     }
