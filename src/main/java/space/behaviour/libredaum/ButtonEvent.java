@@ -2,7 +2,7 @@ package space.behaviour.libredaum;
 
 import java.nio.charset.StandardCharsets;
 
-public class Buttons {
+public class ButtonEvent {
 
     public static final byte[] PRESS_UP = buttonAction("UP");
     public static final byte[] PRESS_DOWN = buttonAction("DP");
