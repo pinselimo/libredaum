@@ -12,24 +12,24 @@ public class Command {
         private static final NumberFormat FLOAT_4_1 = new DecimalFormat("#0000.0");
         private static final NumberFormat FLOAT_5_2 = new DecimalFormat("#00000.00");
 
-        public static final Packet PRESS_UP = buttonAction("UP");
-        public static final Packet PRESS_DOWN = buttonAction("DP");
-        public static final Packet PRESS_START_ENTER = buttonAction("EP");
-        public static final Packet PRESS_STOP = buttonAction("SP");
-        public static final Packet PRESS_EMERGENCY_STOP = buttonAction("FP");
-        public static final Packet PRESS_PLUS = buttonAction("+P");
-        public static final Packet PRESS_MINUS = buttonAction("-P");
+        public static final Packet PRESS_UP = buttonAction(Buttons.PRESS_UP);
+        public static final Packet PRESS_DOWN = buttonAction(Buttons.PRESS_DOWN);
+        public static final Packet PRESS_START_ENTER = buttonAction(Buttons.PRESS_START_ENTER);
+        public static final Packet PRESS_STOP = buttonAction(Buttons.PRESS_STOP);
+        public static final Packet PRESS_EMERGENCY_STOP = buttonAction(Buttons.PRESS_EMERGENCY_STOP);
+        public static final Packet PRESS_PLUS = buttonAction(Buttons.PRESS_PLUS);
+        public static final Packet PRESS_MINUS = buttonAction(Buttons.PRESS_MINUS);
 
-        public static final Packet RELEASE_UP = buttonAction("UR");
-        public static final Packet RELEASE_DOWN = buttonAction("DR");
-        public static final Packet RELEASE_START_ENTER = buttonAction("ER");
-        public static final Packet RELEASE_STOP = buttonAction("SR");
-        public static final Packet RELEASE_EMERGENCY_STOP = buttonAction("FR");
-        public static final Packet RELEASE_PLUS = buttonAction("+R");
-        public static final Packet RELEASE_MINUS = buttonAction("-R");
+        public static final Packet RELEASE_UP = buttonAction(Buttons.RELEASE_UP);
+        public static final Packet RELEASE_DOWN = buttonAction(Buttons.RELEASE_DOWN);
+        public static final Packet RELEASE_START_ENTER = buttonAction(Buttons.RELEASE_START_ENTER);
+        public static final Packet RELEASE_STOP = buttonAction(Buttons.RELEASE_STOP);
+        public static final Packet RELEASE_EMERGENCY_STOP = buttonAction(Buttons.RELEASE_EMERGENCY_STOP);
+        public static final Packet RELEASE_PLUS = buttonAction(Buttons.RELEASE_PLUS);
+        public static final Packet RELEASE_MINUS = buttonAction(Buttons.RELEASE_MINUS);
 
-        private static Packet buttonAction(String button) {
-                return new Packet(Header.U10, button.getBytes(StandardCharsets.US_ASCII));
+        private static Packet buttonAction(byte[] button) {
+                return new Packet(Header.U10, button);
         }
 
         public static Packet setSafetyMode(byte timeout) {
