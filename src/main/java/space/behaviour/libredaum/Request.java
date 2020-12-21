@@ -1,7 +1,5 @@
 package space.behaviour.libredaum;
 
-import com.sun.xml.internal.bind.v2.runtime.reflect.Lister;
-
 public class Request {
     
     private static Packet newRequest(final byte[] header) {
