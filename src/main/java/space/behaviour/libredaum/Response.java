@@ -13,12 +13,6 @@ public class Response {
         }
     }
 
-    public static class ACKReponse extends Response {
-    }
-
-    public static class NAKResponse extends Response {
-    }
-
     public static class ProtocolVersionResponse extends Response {
         public final String VERSION;
 
@@ -376,129 +370,114 @@ public class Response {
 
     public static Response fromByteArray(byte[] response) throws Response.InvalidResponseException {
 
-        byte h1 = response[0];
         Response r = null;
 
-        switch (h1) {
-            case Packet.ACK:
-                r = new ACKReponse();
+        byte[] header = new byte[3];
+        System.arraycopy(response, 1, header, 0, 3);
+        int len_data = response.length - 4 - 3;
+        byte[] data = new byte[len_data];
+        System.arraycopy(response, 4, data, 0, len_data);
+        byte[] checksum_provided = new byte[2];
+        System.arraycopy(response, 4 + len_data, checksum_provided, 0, 2);
+
+        if (!Arrays.equals(checksum_provided, Packet.checksum(header, data))) {
+            throw new Response.InvalidResponseException();
+        }
+
+        switch (new String(header)) {
+            case "V00":
+                r = new ProtocolVersionResponse(data);
                 break;
-
-            case Packet.NAK:
-                r = new NAKResponse();
+            case "V70":
+                r = new CockpitVersionResponse(data);
                 break;
-
-            case Packet.SOH:
-                byte[] header = new byte[3];
-                System.arraycopy(response, 1, header, 0, 3);
-                int len_data = response.length - 4 - 3;
-                byte[] data = new byte[len_data];
-                System.arraycopy(response, 4, data, 0, len_data);
-                byte[] checksum_provided = new byte[2];
-                System.arraycopy(response, 4 + len_data, checksum_provided, 0, 2);
-
-                if (!Arrays.equals(checksum_provided, Packet.checksum(header, data))) {
-                    throw new Response.InvalidResponseException();
-                }
-
-                switch (new String(header)) {
-                    case "V00":
-                        r = new ProtocolVersionResponse(data);
-                        break;
-                    case "V70":
-                        r = new CockpitVersionResponse(data);
-                        break;
-                    case "Y00":
-                        r = new DeviceTypeResponse(data);
-                        break;
-                    case "F00":
-                        r = new SafetyModeResponse(data);
-                        break;
-                    case "T00":
-                    case "T10":
-                        r = new TrainingTimeResponse(data);
-                        break;
-                    case "P00":
-                        r = new HeartRateValidResponse(data);
-                        break;
-                    case "P01":
-                        r = new HeartRateResponse(data);
-                        break;
-                    case "U10":
-                        r = new ButtonPressResponse(data);
-                        break;
-                    case "Z00":
-                        r = new ErrorStateResponse(data);
-                        break;
-                    case "S00":
-                        r = new SpeedStateResponse(data);
-                        break;
-                    case "S01":
-                        r = new SpeedResponse(data);
-                        break;
-                    case "S02":
-                        r = new SpeedSetResponse(data);
-                        break;
-                    case "S03":
-                        r = new EmergencyStopState(data);
-                        break;
-                    case "S04":
-                        r = new TopSpeedResponse(data);
-                        break;
-                    case "A00":
-                        r = new AccelerationSafeResponse(data);
-                        break;
-                    case "A01":
-                        r = new AccelerationUnsafeResponse(data);
-                        break;
-                    case "D00":
-                        r = new DistanceResponse(data);
-                        break;
-                    case "E00":
-                        r = new InclineAvailableResponse(data);
-                        break;
-                    case "E01":
-                        r = new InclineResponse(data);
-                        break;
-                    case "X00":
-                        r = new CosRecEmulationResponse(data);
-                        break;
-                    case "X70":
-                        r = new TrainingDataResponse(data);
-                        break;
-                    case "I00":
-                        r = new SetGradientAvailabilityReponse(data);
-                        break;
-                    case "S20":
-                        r = new LoadAdjustabilityReponse(data);
-                        break;
-                    case "S21":
-                        r = new GetRPMResponse(data);
-                        break;
-                    case "S22":
-                        r = new SetRPMResponse(data);
-                        break;
-                    case "S23":
-                        r = new SetPowerResponse(data);
-                        break;
-                    case "L70":
-                        r = new DeviceLimitsReponse(data);
-                        break;
-                    case "M70":
-                        r = new M70Response(data);
-                        break;
-                    case "M71":
-                        r = new GearResponse(data);
-                        break;
-                    case "M72":
-                        r = new BikeTypeResponse(data);
-                        break;
-                    default:
-                        throw new InvalidResponseException();
-                }
+            case "Y00":
+                r = new DeviceTypeResponse(data);
+                break;
+            case "F00":
+                r = new SafetyModeResponse(data);
+                break;
+            case "T00":
+            case "T10":
+                r = new TrainingTimeResponse(data);
+                break;
+            case "P00":
+                r = new HeartRateValidResponse(data);
+                break;
+            case "P01":
+                r = new HeartRateResponse(data);
+                break;
+            case "U10":
+                r = new ButtonPressResponse(data);
+                break;
+            case "Z00":
+                r = new ErrorStateResponse(data);
+                break;
+            case "S00":
+                r = new SpeedStateResponse(data);
+                break;
+            case "S01":
+                r = new SpeedResponse(data);
+                break;
+            case "S02":
+                r = new SpeedSetResponse(data);
+                break;
+            case "S03":
+                r = new EmergencyStopState(data);
+                break;
+            case "S04":
+                r = new TopSpeedResponse(data);
+                break;
+            case "A00":
+                r = new AccelerationSafeResponse(data);
+                break;
+            case "A01":
+                r = new AccelerationUnsafeResponse(data);
+                break;
+            case "D00":
+                r = new DistanceResponse(data);
+                break;
+            case "E00":
+                r = new InclineAvailableResponse(data);
+                break;
+            case "E01":
+                r = new InclineResponse(data);
+                break;
+            case "X00":
+                r = new CosRecEmulationResponse(data);
+                break;
+            case "X70":
+                r = new TrainingDataResponse(data);
+                break;
+            case "I00":
+                r = new SetGradientAvailabilityReponse(data);
+                break;
+            case "S20":
+                r = new LoadAdjustabilityReponse(data);
+                break;
+            case "S21":
+                r = new GetRPMResponse(data);
+                break;
+            case "S22":
+                r = new SetRPMResponse(data);
+                break;
+            case "S23":
+                r = new SetPowerResponse(data);
+                break;
+            case "L70":
+                r = new DeviceLimitsReponse(data);
+                break;
+            case "M70":
+                r = new M70Response(data);
+                break;
+            case "M71":
+                r = new GearResponse(data);
+                break;
+            case "M72":
+                r = new BikeTypeResponse(data);
+                break;
             default:
                 throw new InvalidResponseException();
-
         }
         return r;
     }
