@@ -103,7 +103,7 @@ public class Command {
         }
 
         public static Packet setLimit(DeviceLimit limit) {
-                final String SEP = "GS";
+                final String SEP = new String(new byte[]{0x1d});
                 String msg = "";
 
                 switch (limit.deviceFunction) {

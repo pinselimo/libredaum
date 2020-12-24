@@ -9,7 +9,7 @@ public class CosRecData {
     public final int DISTANCE;
 
     public CosRecData(String data) {
-        String[] cosrec = data.split("GS");
+        String[] cosrec = data.split(new String(new byte[]{0x1d}));
 
         TIME = Integer.parseInt(cosrec[0]);
         HEART_RATE = Integer.parseInt(cosrec[1]);
