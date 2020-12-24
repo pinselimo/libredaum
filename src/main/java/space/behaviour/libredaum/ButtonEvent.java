@@ -23,4 +23,29 @@ public class ButtonEvent {
     private static byte[] buttonAction(String code) {
         return code.getBytes(StandardCharsets.US_ASCII);
     }
+
+    public static boolean valid(byte[] event) {
+        switch (new String(event)) {
+            case "UP":
+            case "DP":
+            case "EP":
+            case "SP":
+            case "FP":
+            case "+P":
+            case "-P":
+
+            case "UR":
+            case "DR":
+            case "ER":
+            case "SR":
+            case "FR":
+            case "+R":
+            case "-R":
+
+                return true;
+
+            default:
+                return false;
+        }
+    }
 }
