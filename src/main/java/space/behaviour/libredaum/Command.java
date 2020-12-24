@@ -102,20 +102,11 @@ public class Command {
                 return new Packet(Header.S23, new_pwr);
         }
 
-        public enum DeviceFunction {
-                HEART_RATE,
-                SPEED,
-                POWER,
-                GRADE,
-                ACCELERATION
-        }
-
-        public static Packet setLimit(DeviceFunction df, double minimum
-                , double maximum, double default_value) {
+        public static Packet setLimit(DeviceLimit limit) {
                 final String SEP = "GS";
                 String msg = "";
 
-                switch (df) {
+                switch (limit.deviceFunction) {
                         case HEART_RATE:
                                 msg += "L";
                                 break;
@@ -133,9 +124,9 @@ public class Command {
                                 break;
                 }
                 msg += SEP;
-                msg += FLOAT_5_2.format(minimum) + SEP;
-                msg += FLOAT_5_2.format(maximum) + SEP;
-                msg += FLOAT_5_2.format(default_value);
+                msg += FLOAT_5_2.format(limit.minimum) + SEP;
+                msg += FLOAT_5_2.format(limit.maximum) + SEP;
+                msg += FLOAT_5_2.format(limit.defaultValue);
 
                 return new Packet(Header.L70, msg.getBytes(StandardCharsets.US_ASCII));
         }
