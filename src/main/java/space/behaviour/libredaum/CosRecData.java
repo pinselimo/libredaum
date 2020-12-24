@@ -18,12 +18,12 @@ public class CosRecData {
         DISTANCE = Integer.parseInt(cosrec[4]);
     }
 
-    public CosRecData[] parseCosRecReponse(byte[] data) {
-        String[] datas = new String(data).split(" ");
+    public static CosRecData[] parseCosRecReponse(byte[] data) {
+        String[] response = new String(data).split(" ");
 
-        CosRecData[] cosrecs = new CosRecData[datas.length];
-        for (int i = 0; i < datas.length; i++) {
-            cosrecs[i] = new CosRecData(datas[i]);
+        CosRecData[] cosrecs = new CosRecData[response.length];
+        for (int i = 0; i < response.length; i++) {
+            cosrecs[i] = new CosRecData(response[i]);
         }
         return cosrecs;
     }
