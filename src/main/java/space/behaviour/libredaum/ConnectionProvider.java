@@ -46,6 +46,7 @@ public class ConnectionProvider implements ResponseHandler.ConnectionListener  {
         if (inputThread.isAlive()) inputThread.interrupt();
         try {
             this.socket.close();
+            connectionUpdateListener.onDisconnected();
 
         } catch (IOException e) {
             connectionUpdateListener.onConnectionError(e);
