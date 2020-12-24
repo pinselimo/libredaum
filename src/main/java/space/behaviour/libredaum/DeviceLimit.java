@@ -20,4 +20,26 @@ public class DeviceLimit {
         this.maximum = maximum;
         this.defaultValue = defaultValue;
     }
+
+    public static DeviceLimit fromMessage(String msg) {
+        String[] response = msg.split("GS");
+        DeviceFunction func = null;
+        switch (response[0]) {
+            case "L":
+                func = DeviceFunction.HEART_RATE;
+                break;
+            case "S":
+                func = DeviceFunction.SPEED;
+                break;
+            case "W":
+                func = DeviceFunction.POWER;
+                break;
+            case "E":
+                func = DeviceFunction.GRADE;
+                break;
+            case "A":
+                func = DeviceFunction.ACCELERATION;
+        }
+        return new DeviceLimit(func, Float.parseFloat(response[1]), Float.parseFloat(response[2]), Float.parseFloat(response[3]));
+    }
 }
