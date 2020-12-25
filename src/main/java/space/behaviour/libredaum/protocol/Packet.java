@@ -9,6 +9,9 @@ public class Packet {
     public static final byte ETB = 0x17;
     public static final byte ACK = 0x06;
     public static final byte NAK = 0x15;
+    public static final byte GS = 0x1d;
+
+    public static final String SEP = new String(new byte[]{GS});
 
     public final byte[] bytes;
 

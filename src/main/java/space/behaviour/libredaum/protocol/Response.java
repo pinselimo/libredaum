@@ -46,7 +46,7 @@ public class Response {
                     this.DEVICE_TYPE = DeviceType.LYPS;
                     break;
                 default:
-                    throw new InvalidResponseException("Uknown Device Type: " + new String(data));
+                    throw new InvalidResponseException("Unknown Device Type: " + new String(data));
             }
         }
     }
@@ -201,7 +201,7 @@ public class Response {
                     ACCELERATION = Command.Acceleration.A3;
                     break;
                 default:
-                    throw new InvalidResponseException("Uknown command number: " + new String(data));
+                    throw new InvalidResponseException("Unknown command number: " + new String(data));
             }
         }
     }

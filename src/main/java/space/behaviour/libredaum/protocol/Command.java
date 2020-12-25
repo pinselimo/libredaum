@@ -6,6 +6,8 @@ import java.text.NumberFormat;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import static space.behaviour.libredaum.protocol.Packet.SEP;
+
 public class Command {
 
         private static final NumberFormat FLOAT_4_2 = new DecimalFormat("#0000.00");
@@ -103,7 +105,6 @@ public class Command {
         }
 
         public static Packet setLimit(DeviceLimit limit) {
-                final String SEP = new String(new byte[]{0x1d});
                 String msg = "";
 
                 switch (limit.deviceFunction) {

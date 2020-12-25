@@ -21,7 +21,7 @@ public class TrainingData {
 
     public TrainingData(byte[] data) {
 
-        String[] trainingData = new String(data).split(new String(new byte[]{0x1d}));
+        String[] trainingData = new String(data).split(Packet.SEP);
 
         TIME = Integer.parseInt(trainingData[0]);
         HEART_RATE = Integer.parseInt(trainingData[1]);

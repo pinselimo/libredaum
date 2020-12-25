@@ -22,7 +22,7 @@ public class DeviceLimit {
     }
 
     public static DeviceLimit fromMessage(String msg) {
-        String[] response = msg.split(new String(new byte[]{0x1d}));
+        String[] response = msg.split(Packet.SEP);
         DeviceFunction func = null;
         switch (response[0]) {
             case "L":
