@@ -12,6 +12,8 @@ public class ConnectionProvider implements ResponseHandler.ConnectionListener  {
 
     private Packet lastPacketSent = null;
 
+    private boolean connected = false;
+
     public interface ConnectionUpdateListener {
         void onConnected();
         void onConnectionError(Exception e);
@@ -19,7 +21,7 @@ public class ConnectionProvider implements ResponseHandler.ConnectionListener  {
     }
 
     public interface ResponseListener {
-        boolean onResponse(Response response);
+        void onResponse(Response response);
     }
 
     private final ConnectionUpdateListener connectionUpdateListener;
@@ -33,16 +35,20 @@ public class ConnectionProvider implements ResponseHandler.ConnectionListener  {
     public boolean sendPacket(Packet packet) {
 
         try {
-            outputStream.write(packet.bytes);
-            lastPacketSent = packet;
-            return true;
+            if (isConnected()) {
+                outputStream.write(packet.bytes);
+                lastPacketSent = packet;
+                return true;
+            }
         } catch (IOException e) {
             connectionUpdateListener.onConnectionError(e);
             return false;
         }
+        return false;
     }
 
     public void close() {
+        this.connected = false;
         if (inputThread.isAlive()) inputThread.interrupt();
         try {
             this.socket.close();
@@ -53,7 +59,7 @@ public class ConnectionProvider implements ResponseHandler.ConnectionListener  {
         }
     }
 
-    private void connect(final InetSocketAddress daum)
+    public void connect(final InetSocketAddress daum)
     {
         new Thread(new Runnable()
         {
@@ -84,12 +90,17 @@ public class ConnectionProvider implements ResponseHandler.ConnectionListener  {
             inputThread = new Thread(new ResponseHandler(socket.getInputStream(), this.responseListener, this));
             inputThread.start();
 
+            this.connected = true;
             connectionUpdateListener.onConnected();
         }
         catch (IOException e)
         {
             connectionUpdateListener.onConnectionError(e);
         }
+    }
+
+    public boolean isConnected() {
+        return this.connected;
     }
 
     @Override
