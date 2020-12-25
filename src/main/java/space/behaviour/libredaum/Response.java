@@ -1,15 +1,13 @@
 package space.behaviour.libredaum;
 
 import java.util.Arrays;
-import java.util.HashMap;
-
-import sun.security.provider.certpath.OCSPResponse;
 
 public class Response {
+    private static final String TAG = "Daum.Response";
 
     public static class InvalidResponseException extends Exception {
-        public InvalidResponseException() {
-
+        public InvalidResponseException(String message) {
+            super(message);
         }
     }
 
@@ -48,7 +46,7 @@ public class Response {
                     this.DEVICE_TYPE = DeviceType.LYPS;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Uknown Device Type: " + new String(data));
             }
         }
     }
@@ -77,8 +75,8 @@ public class Response {
         public final boolean VALID;
 
         public HeartRateValidResponse(byte[] data) throws InvalidResponseException {
-            if (data.length != 0)
-                throw new InvalidResponseException();
+            if (data.length != 1)
+                throw new InvalidResponseException("Heart rate validity response malformed.");
             else
                 VALID = data[0] == 0x31;
         }
@@ -99,7 +97,7 @@ public class Response {
             if (ButtonEvent.valid(data))
                 BUTTON_EVENT = data.clone();
             else
-                throw new InvalidResponseException();
+                throw new InvalidResponseException("Button press data malformed.");
         }
     }
 
@@ -129,7 +127,7 @@ public class Response {
                     STATE = SpeedState.PAUSED;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Unknown speed state: " + new String(data));
             }
         }
     }
@@ -160,7 +158,7 @@ public class Response {
                     STOPPED = true;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Unknown emergency stop state: " + new String(data));
             }
         }
     }
@@ -203,7 +201,7 @@ public class Response {
                     ACCELERATION = Command.Acceleration.A3;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Uknown command number: " + new String(data));
             }
         }
     }
@@ -236,7 +234,7 @@ public class Response {
                     INCLINE_AVAILABLE = true;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Unknown incline availability code: " + new String(data));
             }
         }
     }
@@ -277,7 +275,7 @@ public class Response {
                     AVAILABLE = true;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Unknown gradient availability code: " + new String(data));
             }
         }
     }
@@ -294,7 +292,7 @@ public class Response {
                     AVAILABLE = true;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Unknown load adjustability code: " + new String(data));
             }
         }
     }
@@ -327,7 +325,7 @@ public class Response {
         public DeviceLimitsReponse(byte[] data) throws InvalidResponseException {
             LIMIT = DeviceLimit.fromMessage(new String(data));
             if (LIMIT.deviceFunction == null) {
-                throw new InvalidResponseException();
+                throw new InvalidResponseException("Malformed device limits response: " + new String(data));
             }
         }
     }
@@ -363,7 +361,7 @@ public class Response {
                     TYPE = Command.BikeType.MOUNTAIN_BIKE;
                     break;
                 default:
-                    throw new InvalidResponseException();
+                    throw new InvalidResponseException("Unknown bike type code: " + new String(data));
             }
         }
     }
@@ -381,7 +379,8 @@ public class Response {
         System.arraycopy(response, 4 + len_data, checksum_provided, 0, 2);
 
         if (!Arrays.equals(checksum_provided, Packet.checksum(header, data))) {
-            throw new Response.InvalidResponseException();
+            throw new Response.InvalidResponseException("Checksum:  " + Arrays.toString(checksum_provided)
+            + " does not match expected: " + Arrays.toString(Packet.checksum(header, data)));
         }
 
         switch (new String(header)) {
@@ -477,7 +476,7 @@ public class Response {
                 r = new BikeTypeResponse(data);
                 break;
             default:
-                throw new InvalidResponseException();
+                throw new InvalidResponseException("Unknown header: " + new String(header));
         }
         return r;
     }
