@@ -36,6 +36,6 @@ public class Packet {
             sum += b;
         }
         sum %= 100;
-        return Integer.toString(sum).getBytes(StandardCharsets.US_ASCII);
+        return String.format("%02d",sum).getBytes(StandardCharsets.US_ASCII);
     }
 }
