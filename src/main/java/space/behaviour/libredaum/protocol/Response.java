@@ -319,10 +319,10 @@ public class Response {
         }
     }
 
-    public static class DeviceLimitsReponse extends Response {
+    public static class DeviceLimitsResponse extends Response {
         public final DeviceLimit LIMIT;
 
-        public DeviceLimitsReponse(byte[] data) throws InvalidResponseException {
+        public DeviceLimitsResponse(byte[] data) throws InvalidResponseException {
             LIMIT = DeviceLimit.fromMessage(new String(data));
             if (LIMIT.deviceFunction == null) {
                 throw new InvalidResponseException("Malformed device limits response: " + new String(data));
@@ -464,7 +464,7 @@ public class Response {
                 r = new SetPowerResponse(data);
                 break;
             case "L70":
-                r = new DeviceLimitsReponse(data);
+                r = new DeviceLimitsResponse(data);
                 break;
             case "M70":
                 r = new M70Response(data);
