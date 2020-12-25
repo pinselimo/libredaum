@@ -2,10 +2,12 @@ package space.behaviour.libredaum;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ResponseHandler implements Runnable {
+    private final static String TAG = "Daum.ResponseHandler";
 
     private final InputStream INPUT_STREAM;
     private final ConnectionProvider.ResponseListener RESPONSE_LISTENER;
@@ -27,58 +29,68 @@ public class ResponseHandler implements Runnable {
 
     @Override
     public void run() {
+        Logger.getLogger(TAG).log(Level.INFO, "Listening for Daum responses....");
 
         try
         {
-            InputStreamReader isr = new InputStreamReader(this.INPUT_STREAM, StandardCharsets.US_ASCII);
-            byte[] buffer  = new byte[256];
+            byte[] buffer  = new byte[1024];
             int buffCount  = 0;
-            String message = "";
+            int pos = 0;
 
             while (true)
             {
                 buffCount = this.INPUT_STREAM.read(buffer);
+                Logger.getLogger(TAG).log(Level.INFO, "Received response: " + new String(Arrays.copyOf(buffer, buffCount)));
 
-                Response r = null;
-                switch (buffer[0]) {
-                    case Packet.NAK:
-                        CONNECTION_LISTENER.receivedNAK();
-                    case Packet.ACK:
-                        dropByte(buffer);
-                        break;
-                    case Packet.SOH:
-                        r = Response.fromByteArray(buffer);
-                        dropResponse(buffer);
-                        RESPONSE_LISTENER.onResponse(r);
-                        CONNECTION_LISTENER.requireACK();
+                while (buffCount > 0) {
+                    Response r = null;
+
+                    switch (buffer[pos]) {
+                        case Packet.NAK:
+                            CONNECTION_LISTENER.receivedNAK();
+                        case Packet.ACK:
+                            buffCount -= 1;
+                            pos += 1;
+                            break;
+                        case Packet.SOH:
+                            int end = responseLength(pos, buffer);
+                            int length = end-pos;
+
+                            byte[] responseBytes = new byte[length];
+                            System.arraycopy(buffer, pos, responseBytes, 0, length);
+
+                            r = Response.fromByteArray(responseBytes);
+
+                            buffCount -= length;
+                            pos += length;
+                            RESPONSE_LISTENER.onResponse(r);
+                            CONNECTION_LISTENER.requireACK();
+                    }
                 }
+                pos = 0;
 
                 Thread.sleep(10l,0);
             }
 
-        } catch (IOException ignored)
+        } catch (IOException e)
         {
+            Logger.getLogger(TAG).log(Level.SEVERE, e.getMessage());
 
-        } catch (InterruptedException ignored)
+        } catch (InterruptedException e)
         {
+            Logger.getLogger(TAG).log(Level.SEVERE, e.getMessage());
 
         } catch (Response.InvalidResponseException requiresNAK) {
+            Logger.getLogger(TAG).log(Level.SEVERE, requiresNAK.getMessage());
             CONNECTION_LISTENER.requireNAK();
         }
 
     }
 
-    private static void dropByte(byte[] buffer) {
-        if (buffer.length - 1 >= 0) System.arraycopy(buffer, 1, buffer, 0, buffer.length - 1);
-        buffer[buffer.length-1] = 0;
-    }
-
-    private static void dropResponse(byte[] buffer) {
-        int end = 0;
-        for (; end < buffer.length && end != Packet.ETB; end++);
-        if (buffer.length - end >= 0) System.arraycopy(buffer, end, buffer, 0, buffer.length - end);
-        for (int i = end; i < buffer.length; i++) {
-            buffer[i] = 0;
-        }
+    private static int responseLength(int pos, byte[] buffer) {
+        int end = pos;
+        while (end < buffer.length && buffer[end] != Packet.ETB)
+            end++;
+        return end+1;
     }
 }
