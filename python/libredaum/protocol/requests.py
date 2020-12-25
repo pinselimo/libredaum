@@ -1,0 +1,37 @@
+from .packet import Packet
+from .header import Header
+
+def newRequest(header):
+    return Packet(header, b'')
+
+PROTOCOL_VERSION = newRequest(Header.V00)
+COCKPIT_VERSION  = newRequest(Header.V01)
+DEVICE_TYPE = newRequest(Header.Y00)
+SAFETY_MODE = newRequest(Header.F00)
+TRAINING_TIME = newRequest(Header.T00)
+HEART_RATE_VALIDITY = newRequest(Header.P00)
+HEART_RATE = newRequest(Header.P01)
+BUTTON_PRESS = newRequest(Header.U10)
+ERROR_STATE = newRequest(Header.Z00)
+SPEED_STATE = newRequest(Header.S00)
+SPEED = newRequest(Header.S01)
+SPEED_SET = newRequest(Header.S02)
+EMERGENCY_STOP_STATE = newRequest(Header.S03)
+SPEED_MAX = newRequest(Header.S04)
+ACCELERATION_DECELERATION_SAFE = newRequest(Header.A00)
+ACCELERATION_DECELERATION_UNSAFE = newRequest(Header.A01)
+DISTANCE = newRequest(Header.D00)
+INCLINE_AVAILABLE = newRequest(Header.E00)
+INCLINE = newRequest(Header.E01)
+COSREC_EMULATION = newRequest(Header.X00)
+DATA_TRAINING = newRequest(Header.X70)
+GRADIENT_SET_AVAILABLE = newRequest(Header.I00)
+LOAD_ADJUSTABILITY = newRequest(Header.S20)
+RPM_GET = newRequest(Header.S21)
+RPM_SET = newRequest(Header.S22)
+POWER_SET = newRequest(Header.S23)
+DEVICE_LIMITS = newRequest(Header.L70)
+M70 = newRequest(Header.M70)
+GEAR = newRequest(Header.M71)
+BIKE_TYPE = newRequest(Header.M72)
+
