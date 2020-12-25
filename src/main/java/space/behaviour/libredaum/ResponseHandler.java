@@ -6,6 +6,9 @@ import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import space.behaviour.libredaum.protocol.Packet;
+import space.behaviour.libredaum.protocol.Response;
+
 public class ResponseHandler implements Runnable {
     private final static String TAG = "Daum.ResponseHandler";
 

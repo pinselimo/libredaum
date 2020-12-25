@@ -1,4 +1,4 @@
-package space.behaviour.libredaum;
+package space.behaviour.libredaum.protocol;
 
 public class CosRecData {
 

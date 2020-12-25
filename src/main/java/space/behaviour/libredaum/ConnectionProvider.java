@@ -5,6 +5,9 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 
+import space.behaviour.libredaum.protocol.Packet;
+import space.behaviour.libredaum.protocol.Response;
+
 public class ConnectionProvider implements ResponseHandler.ConnectionListener  {
     private Socket socket;
     private Thread inputThread;
