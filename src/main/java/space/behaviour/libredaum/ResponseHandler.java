@@ -61,12 +61,15 @@ public class ResponseHandler implements Runnable {
 
                             byte[] responseBytes = new byte[length];
                             System.arraycopy(buffer, pos, responseBytes, 0, length);
-
-                            r = Response.fromByteArray(responseBytes);
-
+                            try {
+                                r = Response.fromByteArray(responseBytes);
+                                RESPONSE_LISTENER.onResponse(r);
+                            } catch (Response.InvalidResponseException requiresNAK) {
+                                Logger.getLogger(TAG).log(Level.SEVERE, requiresNAK.getMessage());
+                                CONNECTION_LISTENER.requireNAK();
+                            }
                             buffCount -= length;
                             pos += length;
-                            RESPONSE_LISTENER.onResponse(r);
                             CONNECTION_LISTENER.requireACK();
                     }
                 }
@@ -83,11 +86,7 @@ public class ResponseHandler implements Runnable {
         {
             Logger.getLogger(TAG).log(Level.SEVERE, e.getMessage());
 
-        } catch (Response.InvalidResponseException requiresNAK) {
-            Logger.getLogger(TAG).log(Level.SEVERE, requiresNAK.getMessage());
-            CONNECTION_LISTENER.requireNAK();
         }
-
     }
 
     private static int responseLength(int pos, byte[] buffer) {
