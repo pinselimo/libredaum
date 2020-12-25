@@ -43,7 +43,7 @@ public class ResponseHandler implements Runnable {
             while (true)
             {
                 buffCount = this.INPUT_STREAM.read(buffer);
-                Logger.getLogger(TAG).log(Level.INFO, "Received response: " + new String(Arrays.copyOf(buffer, buffCount)));
+                Logger.getLogger(TAG).log(Level.INFO, "Received response: " + Arrays.toString(Arrays.copyOf(buffer, buffCount)));
 
                 while (buffCount > 0) {
                     Response r = null;
