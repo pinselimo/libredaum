@@ -25,7 +25,7 @@ public class TrainingData {
 
         TIME = Integer.parseInt(trainingData[0]);
         HEART_RATE = Integer.parseInt(trainingData[1]);
-        SPEED = Float.parseFloat(trainingData[2]);
+        SPEED = Float.parseFloat(trainingData[2]) * 3.6f; // convert to m/s
         INCLINE = Float.parseFloat(trainingData[3]);
         DISTANCE = Integer.parseInt(trainingData[4]);
         RPM = Float.parseFloat(trainingData[5]);
